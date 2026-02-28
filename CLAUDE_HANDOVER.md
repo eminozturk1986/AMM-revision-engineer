@@ -448,11 +448,14 @@ Your first action in every new session:
 - Generated sample_AMP_cessna172.xlsx with 12 tasks and 4 aircraft fleet
 - Status: Foundation complete. Next → TASK 1 (Python package structure)
 
-### Session 2 — [DATE]
-[Claude Code: fill in what you built here]
-
-### Session 3 — [DATE]
-[Claude Code: fill in what you built here]
+### Session 2 — 2026-02-28
+- Built complete amm_engineer/ Python package (7 modules: models, parser, differ, classifier, amp_matcher, reporter, cli)
+- 34 pytest tests — all passing
+- Fixed: TIME LIMITS table per-item diffing (fuel filter 100→50 FH, battery 90→60 Days)
+- Fixed: Highlights regex for em-dash separator
+- Generated index.html GitHub Pages landing page (dark aerospace / amber theme, matches Invoice Check Engineer style)
+- Pushed to GitHub: github.com/eminozturk1986/AMM-revision-engineer
+- Status: Complete. Enable GitHub Pages (Settings > Pages > main, root) to activate landing page.
 
 ---
 
