@@ -1,0 +1,168 @@
+CESSNA MODEL 172 SERIES — AIRCRAFT MAINTENANCE MANUAL
+REVISION 15 — DECEMBER 1/1996
+NOTE: This is SYNTHETIC sample data for AI skill testing purposes only.
+It simulates realistic AMM structure and is NOT copied from any real manual.
+
+================================================================================
+HIGHLIGHTS — REVISION 15
+================================================================================
+ATA CHAPTER 05 — TIME LIMITS / MAINTENANCE CHECKS
+  05-10-00, Page 201: REVISED — Updated inspection interval table
+ATA CHAPTER 12 — SERVICING
+  12-10-00, Page 201: REVISED — Hydraulic fluid specification updated
+ATA CHAPTER 32 — LANDING GEAR
+  32-40-00, Page 201: NO CHANGE
+ATA CHAPTER 71 — POWERPLANT
+  71-00-00, Page 201: REVISED — Engine mount inspection procedure
+
+================================================================================
+LIST OF EFFECTIVE PAGES (LEP) — EXCERPT
+================================================================================
+Chapter-Section-Subject  Page  Date         Status
+05-10-00                 201   Dec 1/1996   R
+05-10-00                 202   Dec 1/1996   R
+12-10-00                 201   Dec 1/1996   R
+32-40-00                 201   Jun 1/1994   -
+71-00-00                 201   Dec 1/1996   R
+71-00-00                 202   Jun 1/1994   -
+
+================================================================================
+ATA CHAPTER 05 — TIME LIMITS / MAINTENANCE CHECKS
+05-10-00 — SCHEDULED MAINTENANCE CHECKS
+================================================================================
+
+TASK 05-10-00-200-801: Annual/100-Hour Inspection — Time Limits
+
+1. GENERAL
+   This task defines the inspection intervals for scheduled maintenance
+   of the Cessna Model 172 Series aircraft.
+
+2. TIME LIMITS
+
+   ITEM                           INTERVAL          EFFECTIVITY
+   ---------------------------------------------------------------
+   Annual Inspection              12 Months         All
+   100-Hour Inspection            100 FH            Commercial Ops
+   Oil Change (with filter)       100 FH or 4 Mo    All
+   Oil Change (no filter)         50 FH  or 4 Mo    All
+   Spark Plug Inspection          100 FH            All
+   Brake System Inspection        100 FH            All
+   Landing Gear Strut Service     100 FH            All
+   Alternator Belt Inspection     100 FH            All
+   Fuel Filter Replacement        100 FH or 12 Mo   All
+   Battery Inspection             100 FH or 90 Days All
+   Flight Control Rigging Check   Annual            All
+   Compass Swing                  Annual            All
+
+3. MATERIALS REQUIRED
+   - Engine oil: MIL-L-22851 (Ashless Dispersant) or equivalent
+   - Spark plug anti-seize compound: Kopr-Kote or equivalent
+   - Hydraulic brake fluid: MIL-H-5606
+
+4. TOOLS REQUIRED
+   - Standard hand tools
+   - Torque wrench (calibrated)
+   - Compression tester: Desynn T600 or equivalent
+   - Timing light
+
+5. MAN-HOURS
+   Annual Inspection: 16.0 MH (estimated)
+   100-Hour Inspection: 8.0 MH (estimated)
+
+================================================================================
+ATA CHAPTER 12 — SERVICING
+12-10-00 — REPLENISHING
+================================================================================
+
+TASK 12-10-00-200-801: Hydraulic Brake Fluid — Servicing
+
+1. GENERAL
+   This task describes the procedure for checking and replenishing
+   the hydraulic brake fluid reservoir.
+
+2. MATERIALS REQUIRED
+   P/N: Not applicable — specify by specification
+   Specification: MIL-H-5606 (Petroleum Base)
+   Quantity: As required
+
+3. PROCEDURE
+   3.1  Open the baggage compartment door.
+   3.2  Locate the brake fluid reservoir on the left forward firewall.
+   3.3  Clean the area around the reservoir cap with a clean cloth.
+   3.4  Remove the reservoir cap.
+   3.5  Check fluid level. Fluid should be within 1/4 inch of top.
+   3.6  Add MIL-H-5606 fluid as required.
+   3.7  Install reservoir cap and ensure it is secure.
+   3.8  Check for leaks at reservoir, lines, and brake assemblies.
+
+4. MAN-HOURS: 0.3 MH
+
+================================================================================
+ATA CHAPTER 32 — LANDING GEAR
+32-40-00 — WHEELS AND BRAKES
+================================================================================
+
+TASK 32-40-00-200-801: Wheel and Brake Inspection
+
+1. GENERAL
+   Inspect wheel assemblies and brake disc for condition and wear.
+
+2. INTERVAL: 100 Flight Hours or Annual, whichever comes first
+
+3. PROCEDURE
+   3.1  Jack aircraft per AMM 07-10-00.
+   3.2  Remove wheel fairing if installed.
+   3.3  Inspect tire for cuts, wear, and pressure.
+       Main gear tire pressure: 28 PSI (Standard)
+       Nose gear tire pressure: 24 PSI
+   3.4  Inspect brake disc for minimum thickness.
+       Minimum disc thickness: 0.188 inch
+       Maximum disc runout: 0.030 inch
+   3.5  Inspect brake lining for minimum thickness.
+       Minimum lining thickness: 0.100 inch
+
+4. TOOLS REQUIRED
+   - Vernier caliper or micrometer
+   - Tire pressure gauge
+   - Standard hand tools
+
+5. MATERIALS REQUIRED
+   - Cleaning solvent: MIL-PRF-680
+
+6. MAN-HOURS: 1.5 MH
+
+================================================================================
+ATA CHAPTER 71 — POWERPLANT
+71-00-00 — ENGINE INSTALLATION
+================================================================================
+
+TASK 71-00-00-200-801: Engine Mount Inspection
+
+1. GENERAL
+   Inspect engine mount structure and shock mounts for condition.
+
+2. INTERVAL: Annual or 500 Flight Hours, whichever comes first
+
+3. PROCEDURE
+   3.1  Remove engine cowling per AMM 71-10-00.
+   3.2  Visually inspect all engine mount tubes for:
+       - Cracks, dents, corrosion
+       - Loose or missing fasteners
+   3.3  Inspect rubber shock mounts for:
+       - Deterioration, cracking, oil saturation
+       - Compression set (replace if collapsed)
+   3.4  Check all mount attachment bolts for proper torque.
+       Torque value: 200-220 inch-pounds
+   3.5  Install engine cowling.
+
+4. TOOLS REQUIRED
+   - Standard hand tools
+   - Torque wrench
+
+5. MATERIALS REQUIRED
+   - Cleaning solvent: MIL-PRF-680
+   - Corrosion inhibitor: MIL-C-16173 Grade 2
+
+6. MAN-HOURS: 1.0 MH
+
+END OF REVISION 15 EXCERPT

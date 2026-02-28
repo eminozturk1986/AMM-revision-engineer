@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMM Revision Engineer — AI-Powered AMM Delta Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #0f172a;
+      --navy2:  #1e293b;
+      --navy3:  #334155;
+      --amber:  #f59e0b;
+      --amber2: #fbbf24;
+      --amber3: #fde68a;
+      --white:  #ffffff;
+      --slate:  #94a3b8;
+      --slate2: #64748b;
+      --red:    #ef4444;
+      --green:  #22c55e;
+      --blue:   #3b82f6;
+      --sans:   'IBM Plex Sans', system-ui, sans-serif;
+      --mono:   'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Grid overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(245,158,11,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Scan line */
+    body::after {
+      content: '';
+      position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(245,158,11,.4), transparent);
+      z-index: 100; pointer-events: none;
+      animation: scanline 6s linear infinite;
+    }
+    @keyframes scanline {
+      0%   { top: 0; opacity: 1; }
+      90%  { opacity: .4; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 2rem;
+      background: rgba(15,23,42,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,158,11,.15);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: .6rem;
+      font-family: var(--mono); font-size: .9rem; color: var(--amber);
+      text-decoration: none;
+    }
+    .nav-brand svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a {
+      color: var(--slate); font-size: .88rem; text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--amber); }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      padding: .45rem 1.1rem; border-radius: 6px;
+      font-weight: 700; font-size: .85rem;
+      text-decoration: none; transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--amber2); }
+
+    /* SECTIONS */
+    section { position: relative; z-index: 1; }
+
+    /* HERO */
+    .hero {
+      min-height: 92vh;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+      padding: 5rem 2rem 4rem;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3);
+      color: var(--amber); border-radius: 999px;
+      padding: .35rem .9rem; font-size: .78rem; font-family: var(--mono);
+      margin-bottom: 2rem; letter-spacing: .04em;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%;
+      background: var(--amber); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}
+      50%{opacity:.5;transform:scale(1.35)} }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.12;
+      max-width: 800px; margin-bottom: 1.4rem;
+    }
+    .hero h1 em { font-style: normal; color: var(--amber); }
+    .hero p {
+      font-size: clamp(.95rem, 2vw, 1.18rem); color: var(--slate);
+      max-width: 600px; margin-bottom: 2.5rem;
+    }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: var(--amber); color: var(--navy);
+      padding: .8rem 1.8rem; border-radius: 8px; font-weight: 700;
+      text-decoration: none; font-size: 1rem; transition: all .2s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-primary:hover { background: var(--amber2); transform: translateY(-1px); }
+    .btn-outline {
+      border: 1px solid rgba(245,158,11,.4); color: var(--amber);
+      padding: .8rem 1.8rem; border-radius: 8px; font-weight: 600;
+      text-decoration: none; font-size: 1rem; transition: all .2s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-outline:hover { background: rgba(245,158,11,.08); border-color: var(--amber); }
+
+    /* TERMINAL WIDGET */
+    .terminal-wrap {
+      margin-top: 4rem; width: 100%; max-width: 740px;
+      background: rgba(15,23,42,.6); border: 1px solid rgba(245,158,11,.2);
+      border-radius: 12px; overflow: hidden;
+    }
+    .term-bar {
+      background: var(--navy2); padding: .7rem 1.1rem;
+      display: flex; align-items: center; gap: .5rem;
+      border-bottom: 1px solid rgba(245,158,11,.1);
+    }
+    .term-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .term-dot.r { background: #ff5f57; }
+    .term-dot.y { background: #ffbd2e; }
+    .term-dot.g { background: #28c840; }
+    .term-title {
+      margin-left: auto; font-family: var(--mono);
+      font-size: .75rem; color: var(--slate2);
+    }
+    .term-body {
+      padding: 1.4rem 1.6rem;
+      font-family: var(--mono); font-size: .82rem;
+      line-height: 1.9; text-align: left;
+    }
+    .t-prompt { color: var(--amber); }
+    .t-cmd { color: var(--white); }
+    .t-comment { color: var(--slate2); }
+    .t-green { color: var(--green); }
+    .t-red { color: #fc8181; }
+    .t-yellow { color: var(--amber3); }
+    .t-blue { color: #93c5fd; }
+
+    /* STATS STRIP */
+    .stats-strip {
+      background: var(--navy2);
+      border-top: 1px solid rgba(245,158,11,.1);
+      border-bottom: 1px solid rgba(245,158,11,.1);
+      padding: 2.2rem 2rem;
+      display: flex; justify-content: center; gap: 0;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: .8rem 2.5rem;
+      border-right: 1px solid rgba(245,158,11,.1);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--amber); font-family: var(--mono); }
+    .stat-lbl { font-size: .78rem; color: var(--slate); text-transform: uppercase;
+      letter-spacing: .06em; margin-top: .2rem; }
+
+    /* SECTION TITLES */
+    .section-title {
+      text-align: center; padding: 5rem 2rem 1rem;
+    }
+    .section-title .eyebrow {
+      font-family: var(--mono); font-size: .78rem; color: var(--amber);
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: .7rem;
+    }
+    .section-title h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem); font-weight: 800;
+      max-width: 600px; margin: 0 auto 1rem;
+    }
+    .section-title p { color: var(--slate); max-width: 520px; margin: 0 auto; }
+
+    /* HOW IT WORKS */
+    .steps {
+      max-width: 900px; margin: 3rem auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem; padding: 0 2rem;
+    }
+    .step {
+      background: var(--navy2); border: 1px solid rgba(245,158,11,.12);
+      border-radius: 12px; padding: 1.8rem 1.5rem;
+      transition: border-color .2s, transform .2s;
+    }
+    .step:hover { border-color: rgba(245,158,11,.4); transform: translateY(-2px); }
+    .step-num {
+      font-family: var(--mono); font-size: 2rem; font-weight: 600;
+      color: rgba(245,158,11,.25); line-height: 1; margin-bottom: .8rem;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; color: var(--amber); margin-bottom: .5rem; }
+    .step p { font-size: .88rem; color: var(--slate); }
+
+    /* CHANGE TYPES TABLE */
+    .change-grid {
+      max-width: 1000px; margin: 3rem auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem; padding: 0 2rem;
+    }
+    .change-card {
+      background: var(--navy2); border: 1px solid var(--navy3);
+      border-radius: 10px; padding: 1.2rem 1.5rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      transition: border-color .2s;
+    }
+    .change-card:hover { border-color: rgba(245,158,11,.3); }
+    .change-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .icon-red { background: rgba(239,68,68,.15); color: var(--red); }
+    .icon-amber { background: rgba(245,158,11,.15); color: var(--amber); }
+    .icon-green { background: rgba(34,197,94,.15); color: var(--green); }
+    .icon-blue { background: rgba(59,130,246,.15); color: var(--blue); }
+    .change-card h4 {
+      font-family: var(--mono); font-size: .8rem; font-weight: 600;
+      color: var(--white); margin-bottom: .3rem;
+    }
+    .change-card p { font-size: .82rem; color: var(--slate); }
+    .prio-badge {
+      margin-left: auto; flex-shrink: 0;
+      font-family: var(--mono); font-size: .68rem; font-weight: 600;
+      padding: .2rem .55rem; border-radius: 4px;
+    }
+    .prio-high { background: rgba(239,68,68,.2); color: #fc8181; }
+    .prio-med  { background: rgba(245,158,11,.2); color: var(--amber2); }
+    .prio-low  { background: rgba(34,197,94,.2);  color: #86efac; }
+
+    /* MODES */
+    .modes {
+      max-width: 880px; margin: 3rem auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; padding: 0 2rem;
+    }
+    @media (max-width: 640px) { .modes { grid-template-columns: 1fr; } }
+    .mode-card {
+      background: var(--navy2); border: 1px solid rgba(245,158,11,.15);
+      border-radius: 14px; padding: 2rem;
+    }
+    .mode-card .mode-icon {
+      font-size: 2rem; margin-bottom: 1rem;
+    }
+    .mode-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: .5rem; }
+    .mode-card .mode-sub {
+      font-family: var(--mono); font-size: .75rem; color: var(--amber);
+      margin-bottom: 1rem; letter-spacing: .05em;
+    }
+    .mode-card p { font-size: .88rem; color: var(--slate); margin-bottom: 1rem; }
+    .mode-card ul {
+      list-style: none; display: flex; flex-direction: column; gap: .4rem;
+    }
+    .mode-card li {
+      font-size: .84rem; color: var(--slate);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .mode-card li::before { content: '▹'; color: var(--amber); flex-shrink: 0; }
+
+    /* OUTPUT SHEETS */
+    .sheets {
+      max-width: 880px; margin: 3rem auto;
+      padding: 0 2rem;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 760px) { .sheets { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .sheets { grid-template-columns: 1fr; } }
+    .sheet-card {
+      background: var(--navy2); border: 1px solid var(--navy3);
+      border-radius: 10px; padding: 1.3rem; text-align: center;
+      transition: border-color .2s, transform .2s;
+    }
+    .sheet-card:hover { border-color: rgba(245,158,11,.3); transform: translateY(-2px); }
+    .sheet-num {
+      font-family: var(--mono); font-size: .7rem; color: var(--slate2);
+      margin-bottom: .4rem;
+    }
+    .sheet-name {
+      font-family: var(--mono); font-size: .82rem; font-weight: 600;
+      color: var(--amber); margin-bottom: .5rem;
+    }
+    .sheet-desc { font-size: .8rem; color: var(--slate); }
+
+    /* CLI USAGE */
+    .cli-section {
+      max-width: 760px; margin: 0 auto; padding: 0 2rem 2rem;
+    }
+    .cli-block {
+      background: var(--navy2); border: 1px solid rgba(245,158,11,.15);
+      border-radius: 10px; overflow: hidden; margin-bottom: 1.2rem;
+    }
+    .cli-label {
+      background: rgba(245,158,11,.08);
+      padding: .5rem 1rem; font-family: var(--mono);
+      font-size: .72rem; color: var(--amber);
+      border-bottom: 1px solid rgba(245,158,11,.1);
+    }
+    .cli-code {
+      padding: 1rem 1.2rem;
+      font-family: var(--mono); font-size: .82rem;
+      color: var(--white); line-height: 2; white-space: pre-wrap;
+    }
+
+    /* SUITE */
+    .suite {
+      max-width: 900px; margin: 3rem auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem; padding: 0 2rem;
+    }
+    .suite-card {
+      background: var(--navy2); border: 1px solid var(--navy3);
+      border-radius: 10px; padding: 1.3rem 1.5rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+      text-decoration: none; transition: border-color .2s, transform .2s;
+    }
+    .suite-card:hover { border-color: rgba(245,158,11,.35); transform: translateY(-2px); }
+    .suite-icon {
+      font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem;
+    }
+    .suite-card h4 { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .3rem; }
+    .suite-card p { font-size: .82rem; color: var(--slate); }
+    .suite-card.active { border-color: rgba(245,158,11,.4); }
+    .suite-card.active h4 { color: var(--amber); }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy2);
+      border-top: 1px solid rgba(245,158,11,.1);
+      padding: 2.5rem 2rem; text-align: center;
+    }
+    footer p { font-size: .82rem; color: var(--slate2); }
+    footer a { color: var(--amber); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-brand {
+      font-family: var(--mono); font-size: .9rem; color: var(--amber);
+      margin-bottom: .8rem; display: block;
+    }
+
+    /* RESPONSIVE NAV */
+    @media (max-width: 680px) {
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="rgba(245,158,11,.15)"/>
+      <path d="M6 22L10 10h2l4 8 4-8h2l4 12h-2.5l-2.5-8-3.5 7h-1l-3.5-7-2.5 8H6z" fill="#f59e0b"/>
+    </svg>
+    AMM Revision Engineer
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#changes">Change types</a></li>
+    <li><a href="#modes">MRO / CAMO</a></li>
+    <li><a href="#output">Output</a></li>
+    <li><a href="#suite">Suite</a></li>
+  </ul>
+  <a href="https://github.com/eminozturk1986/AMM-revision-engineer" class="nav-cta" target="_blank">GitHub →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Agentic Aviation · AMM Revision Engineer
+  </div>
+  <h1>Stop reading AMM revisions<br><em>manually.</em></h1>
+  <p>
+    AI agent that reads new OEM AMM revisions, detects every change — interval
+    reductions, new tools, new special tests, material spec changes — and generates
+    structured reports for MRO planners and CAMO engineers.
+  </p>
+  <div class="hero-buttons">
+    <a href="https://github.com/eminozturk1986/AMM-revision-engineer" class="btn-primary" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+      View on GitHub
+    </a>
+    <a href="#how" class="btn-outline">See how it works ↓</a>
+  </div>
+
+  <!-- Terminal widget -->
+  <div class="terminal-wrap">
+    <div class="term-bar">
+      <span class="term-dot r"></span>
+      <span class="term-dot y"></span>
+      <span class="term-dot g"></span>
+      <span class="term-title">amm-engineer analyze — Cessna 172 Rev15→Rev21</span>
+    </div>
+    <div class="term-body">
+<span class="t-comment"># CAMO mode — compare two AMM revisions + AMP</span>
+<span class="t-prompt">$</span> <span class="t-cmd">amm-engineer analyze \
+    --old cessna172_rev15.txt \
+    --new cessna172_rev21.txt \
+    --amp sample_AMP_cessna172.xlsx \
+    --mode camo --aircraft "Cessna 172"</span>
+
+<span class="t-green">Old revision: Rev 15 — 4 tasks</span>
+<span class="t-green">New revision: Rev 21 — 7 tasks</span>
+<span class="t-green">AMP loaded: 12 tasks</span>
+
+<span class="t-yellow">Delta Analysis — 18 changes detected</span>
+<span class="t-red">  INTERVAL_REDUCED    3   ← AMP amendment required</span>
+<span class="t-yellow">  NEW_TASK             3</span>
+<span class="t-yellow">  NEW_SPECIAL_TEST     1   ← Borescope crew needed</span>
+<span class="t-yellow">  NEW_TOOL             1</span>
+<span class="t-yellow">  MATERIAL_CHANGED     1</span>
+<span class="t-yellow">  NEW_MATERIAL         2</span>
+<span class="t-yellow">  MH_CHANGE            2</span>
+
+<span class="t-green">Reports saved:</span>
+<span class="t-blue">  Excel   : reports/AMM_Delta_20260301.xlsx  (6 sheets)</span>
+<span class="t-blue">  Markdown: reports/AMM_Delta_20260301.md</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <span class="stat-num">14</span>
+    <span class="stat-lbl">Change types detected</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">6</span>
+    <span class="stat-lbl">Excel report sheets</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">3</span>
+    <span class="stat-lbl">Input formats</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">34</span>
+    <span class="stat-lbl">Tests passing</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-title">
+    <div class="eyebrow">Workflow</div>
+    <h2>7-step automated analysis pipeline</h2>
+    <p>From raw AMM documents to actionable engineering reports — fully automated.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>INTAKE</h3>
+      <p>Accepts plain text, single PDF, or multi-chapter PDF packages. Auto-detects aircraft type, revision number, and date.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>PARSE</h3>
+      <p>Extracts TASK blocks, LEP status, HIGHLIGHTS section, intervals, materials, tools, special tests, and man-hours using ATA iSpec 2200 patterns.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>DIFF</h3>
+      <p>Matches tasks by task_ref and fuzzy title. Compares intervals (including TIME LIMITS tables), materials, tools, special tests, and man-hours.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>CLASSIFY</h3>
+      <p>Tags every change with one of 14 change types and assigns HIGH / MEDIUM / LOW priority. INTERVAL_REDUCED is always HIGH.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <h3>FILTER</h3>
+      <p>Applies MRO or CAMO context filter. MRO focuses on tools/materials/tests; CAMO focuses on interval changes vs. AMP.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">06</div>
+      <h3>REPORT</h3>
+      <p>Generates a formatted Excel workbook (6 sheets) + Markdown summary. Color-coded rows, auto-filters, and freeze panes included.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">07</div>
+      <h3>RECOMMEND</h3>
+      <p>Every change gets a human-readable action recommendation — from AMP amendment notices to borescope crew scheduling.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGE TYPES -->
+<section id="changes">
+  <div class="section-title">
+    <div class="eyebrow">Classifier</div>
+    <h2>14 change types, automatically detected</h2>
+    <p>Every AMM delta is categorized and prioritized for the right engineer.</p>
+  </div>
+  <div class="change-grid">
+    <div class="change-card">
+      <div class="change-icon icon-red">⬇</div>
+      <div>
+        <h4>INTERVAL_REDUCED</h4>
+        <p>Shorter maintenance interval — AMP amendment & authority notification may be required.</p>
+      </div>
+      <span class="prio-badge prio-high">HIGH</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-red">✕</div>
+      <div>
+        <h4>DELETED_TASK</h4>
+        <p>Task removed from AMM — remove from AMP and check packages, notify authority.</p>
+      </div>
+      <span class="prio-badge prio-high">HIGH</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-amber">🔬</div>
+      <div>
+        <h4>NEW_SPECIAL_TEST</h4>
+        <p>Borescope / NDT / pressure test added — trained personnel and equipment required.</p>
+      </div>
+      <span class="prio-badge prio-high">HIGH</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-green">+</div>
+      <div>
+        <h4>NEW_TASK</h4>
+        <p>Entirely new maintenance task — evaluate for AMP incorporation and work package update.</p>
+      </div>
+      <span class="prio-badge prio-med">MED</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-amber">⬆</div>
+      <div>
+        <h4>INTERVAL_EXTENDED</h4>
+        <p>Interval relaxed — optional AMP amendment to take advantage of extended interval.</p>
+      </div>
+      <span class="prio-badge prio-med">MED</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-amber">🔧</div>
+      <div>
+        <h4>NEW_TOOL</h4>
+        <p>New special tool required — check stores; raise procurement request if missing.</p>
+      </div>
+      <span class="prio-badge prio-med">MED</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-blue">⚗</div>
+      <div>
+        <h4>MATERIAL_CHANGED</h4>
+        <p>Material specification updated — update approved materials list; QA sign-off required.</p>
+      </div>
+      <span class="prio-badge prio-med">MED</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-blue">+</div>
+      <div>
+        <h4>NEW_MATERIAL</h4>
+        <p>New consumable or part added — verify stock availability and add to approved list.</p>
+      </div>
+      <span class="prio-badge prio-med">MED</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-green">⏱</div>
+      <div>
+        <h4>MH_CHANGE</h4>
+        <p>Man-hours estimate changed — update work package labour cost if change &gt; 10%.</p>
+      </div>
+      <span class="prio-badge prio-low">LOW</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-green">⚠</div>
+      <div>
+        <h4>SAFETY_NOTE</h4>
+        <p>New WARNING or CAUTION added — brief maintenance team; update job cards.</p>
+      </div>
+      <span class="prio-badge prio-low">LOW</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-green">✦</div>
+      <div>
+        <h4>EFFECTIVITY_CHANGE</h4>
+        <p>Applicability (MSN range) changed — verify against fleet serial number list.</p>
+      </div>
+      <span class="prio-badge prio-low">LOW</span>
+    </div>
+    <div class="change-card">
+      <div class="change-icon icon-amber">🔑</div>
+      <div>
+        <h4>ACCESS_CHANGE</h4>
+        <p>New access panel procedure required — update work package, assess man-hours.</p>
+      </div>
+      <span class="prio-badge prio-low">LOW</span>
+    </div>
+  </div>
+</section>
+
+<!-- MODES -->
+<section id="modes">
+  <div class="section-title">
+    <div class="eyebrow">Dual Context</div>
+    <h2>Built for both MRO and CAMO engineers</h2>
+    <p>Same analysis engine, two tailored output views.</p>
+  </div>
+  <div class="modes">
+    <div class="mode-card">
+      <div class="mode-icon">🔧</div>
+      <h3>MRO Mode</h3>
+      <div class="mode-sub">Maintenance Planning Engineers</div>
+      <p>Everything you need before a C-check: new tools, materials, special tests, and man-hour impacts.</p>
+      <ul>
+        <li>New special tools & GSE required</li>
+        <li>Material / consumable spec changes</li>
+        <li>Borescope / NDT crew scheduling</li>
+        <li>Man-hour delta for work packages</li>
+        <li>New tasks added to check scope</li>
+        <li>Tasks removed from check packages</li>
+      </ul>
+    </div>
+    <div class="mode-card">
+      <div class="mode-icon">📋</div>
+      <h3>CAMO Mode</h3>
+      <div class="mode-sub">Airworthiness / AMP Engineers</div>
+      <p>Full AMP impact matrix with authority notification flags. Match every interval change to your AMP task number.</p>
+      <ul>
+        <li>Interval reductions flagged → AMP amendment</li>
+        <li>Fuzzy AMP task matching (task_ref + description)</li>
+        <li>Authority notification YES / EVALUATE flags</li>
+        <li>New tasks for AMP incorporation evaluation</li>
+        <li>Deleted tasks for AMP removal</li>
+        <li>AMP impact matrix as a dedicated Excel sheet</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- OUTPUT -->
+<section id="output">
+  <div class="section-title">
+    <div class="eyebrow">Output</div>
+    <h2>Six-sheet Excel report + Markdown summary</h2>
+    <p>Color-coded, auto-filtered, ready for the engineering team.</p>
+  </div>
+  <div class="sheets">
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 1</div>
+      <div class="sheet-name">SUMMARY</div>
+      <div class="sheet-desc">Change counts by type, priority breakdown, aircraft and revision metadata.</div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 2</div>
+      <div class="sheet-name">ALL_CHANGES</div>
+      <div class="sheet-desc">Complete delta table — all 18 columns, auto-filter, freeze pane, color-coded rows.</div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 3</div>
+      <div class="sheet-name">MRO_ACTION_ITEMS</div>
+      <div class="sheet-desc">Filtered for tools, materials, special tests, and man-hour changes.</div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 4</div>
+      <div class="sheet-name">CAMO_AMP_IMPACT</div>
+      <div class="sheet-desc">Interval changes vs. AMP — authority notification column, AMP task match, amendment flag.</div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 5</div>
+      <div class="sheet-name">NEW_TASKS</div>
+      <div class="sheet-desc">All new tasks for engineering review and potential AMP incorporation.</div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-num">Sheet 6</div>
+      <div class="sheet-name">DELETED_TASKS</div>
+      <div class="sheet-desc">Tasks removed from AMM — remove from AMP and work packages.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CLI USAGE -->
+<section>
+  <div class="section-title">
+    <div class="eyebrow">CLI Usage</div>
+    <h2>Simple command-line interface</h2>
+    <p>Four commands cover every use case.</p>
+  </div>
+  <div class="cli-section">
+    <div class="cli-block">
+      <div class="cli-label">Basic delta — two text files</div>
+      <div class="cli-code"><span style="color:#f59e0b">amm-engineer analyze</span> \
+    --old amm_rev15.txt \
+    --new amm_rev21.txt \
+    --aircraft "Cessna 172" \
+    --output-dir ./reports/</div>
+    </div>
+    <div class="cli-block">
+      <div class="cli-label">CAMO mode — with AMP matching</div>
+      <div class="cli-code"><span style="color:#f59e0b">amm-engineer analyze</span> \
+    --old amm_rev15.txt \
+    --new amm_rev21.txt \
+    --amp sample_AMP.xlsx \
+    --mode camo --aircraft "Cessna 172"</div>
+    </div>
+    <div class="cli-block">
+      <div class="cli-label">PDF input</div>
+      <div class="cli-code"><span style="color:#f59e0b">amm-engineer analyze</span> \
+    --old-pdf amm_old.pdf \
+    --new-pdf amm_new.pdf \
+    --aircraft "B737-800"</div>
+    </div>
+    <div class="cli-block">
+      <div class="cli-label">Extract only — single revision</div>
+      <div class="cli-code"><span style="color:#f59e0b">amm-engineer extract</span> \
+    --input amm_rev21.txt \
+    --aircraft "B737-800"</div>
+    </div>
+  </div>
+</section>
+
+<!-- SUITE -->
+<section id="suite">
+  <div class="section-title">
+    <div class="eyebrow">Agentic Aviation Suite</div>
+    <h2>More AI agents for aviation MRO and CAMO</h2>
+    <p>Four specialist agents — each automates one engineering workflow.</p>
+  </div>
+  <div class="suite">
+    <a class="suite-card active" href="https://github.com/eminozturk1986/AMM-revision-engineer" target="_blank">
+      <div class="suite-icon">📖</div>
+      <div>
+        <h4>AMM Revision Engineer</h4>
+        <p>You are here — automated AMM delta analysis for MRO and CAMO.</p>
+      </div>
+    </a>
+    <a class="suite-card" href="https://github.com/eminozturk1986/CAMO-Engineer-AD-Monitor" target="_blank">
+      <div class="suite-icon">🔍</div>
+      <div>
+        <h4>CAMO AD Monitor</h4>
+        <p>EASA / FAA Airworthiness Directive tracking and fleet impact analysis.</p>
+      </div>
+    </a>
+    <a class="suite-card" href="https://github.com/eminozturk1986/Invoice-Check-Engineer-Agent" target="_blank">
+      <div class="suite-icon">🧾</div>
+      <div>
+        <h4>Invoice Check Engineer</h4>
+        <p>Automated MRO invoice auditing — man-hours, prices, duplicates, warranty.</p>
+      </div>
+    </a>
+    <a class="suite-card" href="https://github.com/eminozturk1986" target="_blank">
+      <div class="suite-icon">🔧</div>
+      <div>
+        <h4>Warranty Engineer</h4>
+        <p>Automated warranty claim submission against OEM supplier portals.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">Agentic Aviation — by Emin Öztürk</span>
+  <p>
+    Built with Python · Pydantic · openpyxl · Rich · Typer ·
+    <a href="https://github.com/eminozturk1986/AMM-revision-engineer" target="_blank">GitHub</a>
+  </p>
+  <p style="margin-top:.6rem; font-size:.75rem;">
+    Disclaimer: This tool is an engineering aid only. All output must be verified by a qualified
+    aviation maintenance engineer. Do not use as the sole basis for airworthiness decisions.
+  </p>
+</footer>
+
+</body>
+</html>

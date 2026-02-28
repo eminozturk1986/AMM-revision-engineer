@@ -1,0 +1,289 @@
+CESSNA MODEL 172 SERIES — AIRCRAFT MAINTENANCE MANUAL
+REVISION 21 — JULY 1/2007
+NOTE: This is SYNTHETIC sample data for AI skill testing purposes only.
+It simulates realistic AMM structure and is NOT copied from any real manual.
+
+================================================================================
+HIGHLIGHTS — REVISION 21
+================================================================================
+ATA CHAPTER 05 — TIME LIMITS / MAINTENANCE CHECKS
+  05-10-00, Page 201: REVISED — Updated fuel filter and battery intervals
+  05-10-00, Page 202: REVISED — Added borescope inspection requirement
+ATA CHAPTER 12 — SERVICING
+  12-10-00, Page 201: REVISED — Hydraulic fluid specification changed to MIL-PRF-5606
+  12-10-00, Page 202: NEW — Added landing gear torque link lubrication task
+ATA CHAPTER 32 — LANDING GEAR
+  32-40-00, Page 201: REVISED — Brake disc minimum thickness reduced (more restrictive)
+  32-40-00, Page 202: NEW — Wheel bearing inspection and repack task added
+ATA CHAPTER 71 — POWERPLANT
+  71-00-00, Page 201: REVISED — Engine mount inspection interval reduced
+  71-00-00, Page 203: NEW — Engine cylinder borescope inspection added (NEW SPECIAL TEST)
+
+================================================================================
+LIST OF EFFECTIVE PAGES (LEP) — EXCERPT
+================================================================================
+Chapter-Section-Subject  Page  Date         Status
+05-10-00                 201   Jul 1/2007   R
+05-10-00                 202   Jul 1/2007   R
+12-10-00                 201   Jul 1/2007   R
+12-10-00                 202   Jul 1/2007   N
+32-40-00                 201   Jul 1/2007   R
+32-40-00                 202   Jul 1/2007   N
+71-00-00                 201   Jul 1/2007   R
+71-00-00                 202   Jun 1/1994   -
+71-00-00                 203   Jul 1/2007   N
+
+================================================================================
+ATA CHAPTER 05 — TIME LIMITS / MAINTENANCE CHECKS
+05-10-00 — SCHEDULED MAINTENANCE CHECKS
+================================================================================
+
+TASK 05-10-00-200-801: Annual/100-Hour Inspection — Time Limits
+
+1. GENERAL
+   This task defines the inspection intervals for scheduled maintenance
+   of the Cessna Model 172 Series aircraft.
+
+2. TIME LIMITS
+
+   ITEM                           INTERVAL          EFFECTIVITY
+   ---------------------------------------------------------------
+   Annual Inspection              12 Months         All
+   100-Hour Inspection            100 FH            Commercial Ops
+   Oil Change (with filter)       100 FH or 4 Mo    All
+   Oil Change (no filter)         50 FH  or 4 Mo    All
+   Spark Plug Inspection          100 FH            All
+   Brake System Inspection        100 FH            All
+   Landing Gear Strut Service     100 FH            All
+   Alternator Belt Inspection     100 FH            All
+   Fuel Filter Replacement        50 FH  or 12 Mo   All        ← CHANGED (was 100 FH)
+   Battery Inspection             100 FH or 60 Days All        ← CHANGED (was 90 Days)
+   Flight Control Rigging Check   Annual            All
+   Compass Swing                  Annual            All
+   Engine Cylinder Borescope      600 FH or Annual  All        ← NEW TASK
+
+3. MATERIALS REQUIRED
+   - Engine oil: MIL-L-22851 (Ashless Dispersant) or equivalent
+   - Spark plug anti-seize compound: Kopr-Kote or equivalent
+   - Hydraulic brake fluid: MIL-PRF-5606 (replaces MIL-H-5606)  ← CHANGED SPEC
+
+4. TOOLS REQUIRED
+   - Standard hand tools
+   - Torque wrench (calibrated)
+   - Compression tester: Desynn T600 or equivalent
+   - Timing light
+   - Borescope: Olympus IPLEX SA or equivalent (NEW)  ← NEW TOOL
+
+5. MAN-HOURS
+   Annual Inspection: 19.0 MH (estimated)  ← CHANGED (was 16.0)
+   100-Hour Inspection: 9.5 MH (estimated)  ← CHANGED (was 8.0)
+
+NOTE: Man-hour increase reflects addition of cylinder borescope inspection.
+
+================================================================================
+ATA CHAPTER 12 — SERVICING
+12-10-00 — REPLENISHING
+================================================================================
+
+TASK 12-10-00-200-801: Hydraulic Brake Fluid — Servicing
+
+1. GENERAL
+   This task describes the procedure for checking and replenishing
+   the hydraulic brake fluid reservoir.
+
+WARNING: Use only MIL-PRF-5606 fluid. Do NOT mix with MIL-H-5606 petroleum
+fluid or synthetic fluid types. Cross-contamination requires complete system
+flush and seal replacement.
+
+2. MATERIALS REQUIRED
+   P/N: Not applicable — specify by specification
+   Specification: MIL-PRF-5606 (Petroleum Base, revised specification)  ← CHANGED
+   Quantity: As required
+   
+   CONSUMABLE MATERIAL ADDED:
+   System Flush Solvent: MIL-PRF-680 Type II (required if fluid type is changed)  ← NEW MATERIAL
+
+3. PROCEDURE
+   3.1  Open the baggage compartment door.
+   3.2  Locate the brake fluid reservoir on the left forward firewall.
+   3.3  Clean the area around the reservoir cap with a clean cloth.
+   3.4  Remove the reservoir cap.
+   3.5  Check fluid level. Fluid should be within 1/4 inch of top.
+   3.6  Verify fluid type matches specification MIL-PRF-5606.
+        If previous fluid was MIL-H-5606, perform system flush per step 3.8 before refilling.
+   3.7  Add MIL-PRF-5606 fluid as required.
+   3.8  SYSTEM FLUSH (if fluid type changed):
+        3.8.1  Drain reservoir completely.
+        3.8.2  Flush with MIL-PRF-680 Type II solvent.
+        3.8.3  Bleed brakes to remove all old fluid from lines.
+        3.8.4  Refill with MIL-PRF-5606.
+   3.9  Install reservoir cap and ensure it is secure.
+   3.10 Check for leaks at reservoir, lines, and brake assemblies.
+
+4. MAN-HOURS: 0.5 MH (system flush: add 2.0 MH)  ← CHANGED (was 0.3 MH)
+
+--------------------------------------------------------------------------------
+TASK 12-10-00-200-802: Landing Gear Torque Link Lubrication — NEW TASK
+
+1. GENERAL
+   THIS TASK IS NEW IN REVISION 21.
+   Lubricate nose and main gear torque link pivot pins at the specified interval.
+
+2. INTERVAL: 200 Flight Hours or Annual, whichever comes first  ← NEW SCHEDULED TASK
+
+3. MATERIALS REQUIRED
+   - Lubricant: MIL-PRF-81322 (Aeroshell Grease 22) or equivalent  ← NEW MATERIAL
+   - Cleaning solvent: MIL-PRF-680
+
+4. TOOLS REQUIRED
+   - Standard hand tools
+   - Grease gun with needle adapter (NEW TOOL REQUIRED)
+
+5. PROCEDURE
+   5.1  Jack aircraft per AMM 07-10-00.
+   5.2  Clean grease fitting area.
+   5.3  Apply grease via fitting until fresh grease appears.
+   5.4  Remove excess grease.
+
+6. MAN-HOURS: 0.5 MH per landing gear leg (1.5 MH total, 3 legs)
+
+================================================================================
+ATA CHAPTER 32 — LANDING GEAR
+32-40-00 — WHEELS AND BRAKES
+================================================================================
+
+TASK 32-40-00-200-801: Wheel and Brake Inspection
+
+1. GENERAL
+   Inspect wheel assemblies and brake disc for condition and wear.
+
+2. INTERVAL: 100 Flight Hours or Annual, whichever comes first  (NO CHANGE)
+
+3. PROCEDURE
+   3.1  Jack aircraft per AMM 07-10-00.
+   3.2  Remove wheel fairing if installed.
+   3.3  Inspect tire for cuts, wear, and pressure.
+       Main gear tire pressure: 28 PSI (Standard)
+       Nose gear tire pressure: 24 PSI
+   3.4  Inspect brake disc for minimum thickness.
+       Minimum disc thickness: 0.148 inch  ← CHANGED (was 0.188 inch — MORE RESTRICTIVE)
+       Maximum disc runout: 0.030 inch
+
+   CAUTION: The minimum disc thickness has been reduced from 0.188 inch to
+   0.148 inch to align with manufacturer service data. Discs previously
+   accepted at 0.188 inch must be re-evaluated against the new limit.
+   
+   3.5  Inspect brake lining for minimum thickness.
+       Minimum lining thickness: 0.100 inch  (NO CHANGE)
+
+4. TOOLS REQUIRED
+   - Vernier caliper or micrometer
+   - Tire pressure gauge
+   - Standard hand tools
+
+5. MATERIALS REQUIRED
+   - Cleaning solvent: MIL-PRF-680
+
+6. MAN-HOURS: 2.0 MH  ← CHANGED (was 1.5 MH, adds wheel bearing task reference)
+
+--------------------------------------------------------------------------------
+TASK 32-40-00-200-802: Wheel Bearing Inspection and Repack — NEW TASK
+
+1. GENERAL
+   THIS TASK IS NEW IN REVISION 21.
+   Inspect and repack main and nose wheel bearings.
+
+2. INTERVAL: 500 Flight Hours or Annual, whichever comes first  ← NEW SCHEDULED TASK
+
+3. MATERIALS REQUIRED
+   - Wheel bearing grease: MIL-PRF-81322 (NEW MATERIAL)
+   - Cleaning solvent: MIL-PRF-680
+   - Safety wire: MS20995C32
+
+4. TOOLS REQUIRED
+   - Wheel bearing packing tool (NEW SPECIAL TOOL required)
+     Specification: C172-BRG-PACK-01 or equivalent hand packing tool
+   - Standard hand tools
+   - Torque wrench
+
+5. MAN-HOURS: 2.5 MH per wheel (7.5 MH total, 3 wheels)
+
+================================================================================
+ATA CHAPTER 71 — POWERPLANT
+71-00-00 — ENGINE INSTALLATION
+================================================================================
+
+TASK 71-00-00-200-801: Engine Mount Inspection
+
+1. GENERAL
+   Inspect engine mount structure and shock mounts for condition.
+
+2. INTERVAL: Annual or 300 Flight Hours, whichever comes first  ← CHANGED (was 500 FH — MORE RESTRICTIVE)
+
+3. PROCEDURE
+   3.1  Remove engine cowling per AMM 71-10-00.
+   3.2  Visually inspect all engine mount tubes for:
+       - Cracks, dents, corrosion
+       - Loose or missing fasteners
+   3.3  Inspect rubber shock mounts for:
+       - Deterioration, cracking, oil saturation
+       - Compression set (replace if collapsed)
+       - Bonding separation from metal inserts (NEW INSPECTION CRITERION)  ← REVISED
+   3.4  Check all mount attachment bolts for proper torque.
+       Torque value: 200-220 inch-pounds  (NO CHANGE)
+   3.5  Install engine cowling.
+
+4. TOOLS REQUIRED
+   - Standard hand tools
+   - Torque wrench
+
+5. MATERIALS REQUIRED
+   - Cleaning solvent: MIL-PRF-680
+   - Corrosion inhibitor: MIL-C-16173 Grade 2
+
+6. MAN-HOURS: 1.0 MH  (NO CHANGE)
+
+--------------------------------------------------------------------------------
+TASK 71-00-00-200-803: Engine Cylinder Borescope Inspection — NEW TASK
+
+1. GENERAL
+   THIS TASK IS NEW IN REVISION 21.
+   Borescope inspection of engine cylinder bores, pistons, and valves.
+
+WARNING: Cylinder borescope inspection requires a qualified engine inspector.
+Personnel must be trained on the borescope equipment before performing this task.
+
+2. INTERVAL: 600 Flight Hours or Annual, whichever comes first  ← NEW SCHEDULED TASK
+
+3. MATERIALS REQUIRED
+   - Penetrating oil: LPS-1 or equivalent (for access plug removal)
+   - Clean shop rags
+
+4. TOOLS REQUIRED
+   SPECIAL TOOL — BORESCOPE REQUIRED:
+   - Rigid borescope, 6mm diameter minimum, 300mm working length
+     Recommended: Olympus IPLEX SA, GE Mentor Visual iQ, or equivalent
+     Minimum resolution: 320x240 pixels
+   - Light source: integrated LED or external fiber optic
+   - Borescope access: remove spark plugs (upper) for insertion point
+
+5. PROCEDURE
+   5.1  Warm engine to operating temperature, then allow to cool 30 minutes.
+   5.2  Remove upper spark plugs from all cylinders.
+   5.3  Insert borescope through spark plug hole.
+   5.4  Inspect cylinder bore for:
+       - Scoring, scuffing, corrosion pitting
+       - Rust (light surface rust is acceptable if removable)
+   5.5  Inspect piston crown for:
+       - Cracks, burn marks, erosion
+       - Carbon deposits (note accumulation)
+   5.6  Rotate crankshaft to inspect intake and exhaust valve faces.
+       - Check for burning, recession, cracking
+   5.7  Document findings with photographs if borescope has image capture.
+   5.8  Reinstall spark plugs with anti-seize compound.
+       Torque: 360-420 inch-pounds
+   5.9  Record inspection in aircraft log with borescope equipment serial number.
+
+6. MAN-HOURS: 3.0 MH (all cylinders, 4-cylinder engine)
+
+END OF REVISION 21 EXCERPT
