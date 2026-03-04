@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMM Revision Engineer — Sample Output Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:   #0f172a;
+      --navy2:  #1e293b;
+      --navy3:  #334155;
+      --amber:  #f59e0b;
+      --amber2: #fbbf24;
+      --amber3: #fde68a;
+      --white:  #ffffff;
+      --slate:  #94a3b8;
+      --slate2: #64748b;
+      --red:    #ef4444;
+      --green:  #22c55e;
+      --blue:   #3b82f6;
+      --orange: #f97316;
+      --sans:   'IBM Plex Sans', system-ui, sans-serif;
+      --mono:   'IBM Plex Mono', 'Courier New', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(245,158,11,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+      background: rgba(15,23,42,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,158,11,.15);
+    }
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--amber);
+      text-decoration: none;
+      letter-spacing: .05em;
+    }
+    .nav-back {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .85rem; color: var(--slate);
+      text-decoration: none;
+      padding: .4rem .9rem;
+      border: 1px solid var(--navy3);
+      border-radius: 6px;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-back:hover { color: var(--amber); border-color: var(--amber); }
+
+    /* HERO */
+    .report-hero {
+      position: relative; z-index: 1;
+      padding: 3rem 2rem 2rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .report-meta {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .report-badge {
+      font-family: var(--mono); font-size: .7rem;
+      padding: .25rem .6rem;
+      background: rgba(245,158,11,.12);
+      border: 1px solid rgba(245,158,11,.3);
+      border-radius: 4px;
+      color: var(--amber);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .report-hero h1 {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: .5rem;
+    }
+    .report-hero h1 span { color: var(--amber); }
+    .report-subtitle {
+      color: var(--slate);
+      font-size: .95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* SUMMARY STATS */
+    .stats-row {
+      display: flex; flex-wrap: wrap; gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      flex: 1; min-width: 130px;
+      background: var(--navy2);
+      border: 1px solid var(--navy3);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+    .stat-label { font-size: .75rem; color: var(--slate); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .25rem; }
+    .stat-value { font-size: 1.8rem; font-weight: 800; font-family: var(--mono); }
+    .stat-value.red { color: var(--red); }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.amber { color: var(--amber); }
+
+    /* TABS */
+    .tabs-wrapper {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+    .tab-bar {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--navy3);
+      padding-bottom: .75rem;
+    }
+    .tab-btn {
+      font-family: var(--mono); font-size: .75rem;
+      padding: .4rem .9rem;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--slate);
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .tab-btn:hover { color: var(--amber); border-color: var(--navy3); }
+    .tab-btn.active {
+      color: var(--amber);
+      background: rgba(245,158,11,.08);
+      border-color: rgba(245,158,11,.3);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--navy3); }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    thead { background: var(--navy2); }
+    th {
+      padding: .75rem 1rem; text-align: left;
+      font-family: var(--mono); font-size: .72rem;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: var(--slate); border-bottom: 1px solid var(--navy3);
+      white-space: nowrap;
+    }
+    td {
+      padding: .7rem 1rem;
+      border-bottom: 1px solid rgba(51,65,85,.5);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(245,158,11,.03); }
+    .mono { font-family: var(--mono); font-size: .8rem; }
+
+    /* PRIORITY BADGES */
+    .pri {
+      display: inline-block;
+      font-family: var(--mono); font-size: .68rem;
+      padding: .15rem .5rem; border-radius: 4px;
+      font-weight: 600; letter-spacing: .05em;
+      white-space: nowrap;
+    }
+    .pri-high   { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3);  }
+    .pri-medium { background: rgba(249,115,22,.15); color: #fb923c; border: 1px solid rgba(249,115,22,.3); }
+    .pri-low    { background: rgba(34,197,94,.12);  color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+
+    /* CHANGE TYPE BADGE */
+    .ctype {
+      display: inline-block;
+      font-family: var(--mono); font-size: .68rem;
+      padding: .15rem .5rem; border-radius: 4px;
+      background: rgba(59,130,246,.12);
+      color: #60a5fa;
+      border: 1px solid rgba(59,130,246,.25);
+      white-space: nowrap;
+    }
+
+    /* ACTION BADGE */
+    .action {
+      display: inline-block;
+      font-family: var(--mono); font-size: .68rem;
+      padding: .15rem .5rem; border-radius: 4px;
+      background: rgba(245,158,11,.1);
+      color: var(--amber);
+      border: 1px solid rgba(245,158,11,.25);
+      white-space: nowrap;
+    }
+
+    /* PANEL HEADER */
+    .panel-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .panel-title { font-size: 1.1rem; font-weight: 600; }
+    .panel-desc { color: var(--slate); font-size: .85rem; margin-top: .2rem; }
+    .row-count {
+      font-family: var(--mono); font-size: .75rem;
+      color: var(--slate2);
+      padding: .3rem .75rem;
+      border: 1px solid var(--navy3);
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    /* AMP IMPACT SPECIFIC */
+    .amp-status {
+      display: inline-block; font-family: var(--mono); font-size: .68rem;
+      padding: .15rem .5rem; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .amp-yes  { background: rgba(239,68,68,.15); color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+    .amp-no   { background: rgba(34,197,94,.12); color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+    .amp-tbd  { background: rgba(148,163,184,.1); color: var(--slate); border: 1px solid var(--navy3); }
+
+    /* SUMMARY SHEET */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .summary-block {
+      background: var(--navy2); border: 1px solid var(--navy3);
+      border-radius: 10px; padding: 1.25rem;
+    }
+    .summary-block h4 { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--slate); margin-bottom: .75rem; font-family: var(--mono); }
+    .summary-item { display: flex; justify-content: space-between; align-items: center; padding: .3rem 0; border-bottom: 1px solid rgba(51,65,85,.4); font-size: .85rem; }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-item .val { font-family: var(--mono); font-weight: 600; }
+
+    /* NOTICE */
+    .notice {
+      display: flex; align-items: flex-start; gap: .75rem;
+      padding: 1rem 1.25rem;
+      background: rgba(245,158,11,.06);
+      border: 1px solid rgba(245,158,11,.2);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: .85rem;
+      color: var(--slate);
+    }
+    .notice-icon { color: var(--amber); font-size: 1rem; flex-shrink: 0; margin-top: .1rem; }
+
+    /* FOOTER */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--navy3);
+      color: var(--slate2); font-size: .8rem;
+    }
+    footer a { color: var(--slate); text-decoration: none; }
+    footer a:hover { color: var(--amber); }
+
+    @media (max-width: 600px) {
+      .report-hero, .tabs-wrapper { padding-left: 1rem; padding-right: 1rem; }
+      td, th { padding: .5rem .6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-brand">✈ AMM Revision Engineer</a>
+  <a href="index.html" class="nav-back">← Back to Overview</a>
+</nav>
+
+<!-- HERO -->
+<section class="report-hero">
+  <div class="report-meta">
+    <span class="report-badge">Sample Output</span>
+    <span class="report-badge">Cessna 172 · Rev 15 → Rev 21</span>
+    <span class="report-badge">Synthetic Demo Data</span>
+  </div>
+  <h1>AMM Revision Delta <span>Report</span></h1>
+  <p class="report-subtitle">
+    Auto-generated by AMM Revision Engineer · 6-sheet Excel output rendered as interactive report
+  </p>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Total Changes</div>
+      <div class="stat-value amber">10</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">High Priority</div>
+      <div class="stat-value red">3</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Medium Priority</div>
+      <div class="stat-value orange">6</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Low Priority</div>
+      <div class="stat-value green">1</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">AMP Tasks Affected</div>
+      <div class="stat-value amber">5</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Authority Notification</div>
+      <div class="stat-value red">3</div>
+    </div>
+  </div>
+</section>
+
+<!-- TABS -->
+<section class="tabs-wrapper">
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('summary',this)">SUMMARY</button>
+    <button class="tab-btn" onclick="showTab('all',this)">ALL_CHANGES</button>
+    <button class="tab-btn" onclick="showTab('mro',this)">MRO_ACTION_ITEMS</button>
+    <button class="tab-btn" onclick="showTab('camo',this)">CAMO_AMP_IMPACT</button>
+    <button class="tab-btn" onclick="showTab('new',this)">NEW_TASKS</button>
+    <button class="tab-btn" onclick="showTab('deleted',this)">DELETED_TASKS</button>
+  </div>
+
+  <!-- ── SHEET 1: SUMMARY ── -->
+  <div class="tab-panel active" id="tab-summary">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Summary Dashboard</div>
+        <div class="panel-desc">High-level counts, priorities and action overview</div>
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-block">
+        <h4>Change Counts by Type</h4>
+        <div class="summary-item"><span>INTERVAL_REDUCED</span><span class="val" style="color:var(--red)">3</span></div>
+        <div class="summary-item"><span>NEW_TASK</span><span class="val" style="color:var(--orange)">3</span></div>
+        <div class="summary-item"><span>NEW_SPECIAL_TEST</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>NEW_TOOL</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>NEW_MATERIAL</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>MATERIAL_CHANGED</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>MH_CHANGE</span><span class="val" style="color:var(--green)">1</span></div>
+        <div class="summary-item"><span>DELETED_TASK</span><span class="val" style="color:var(--slate)">0</span></div>
+      </div>
+
+      <div class="summary-block">
+        <h4>Priority Distribution</h4>
+        <div class="summary-item"><span>🔴 HIGH</span><span class="val" style="color:var(--red)">3</span></div>
+        <div class="summary-item"><span>🟠 MEDIUM</span><span class="val" style="color:var(--orange)">6</span></div>
+        <div class="summary-item"><span>🟢 LOW</span><span class="val" style="color:var(--green)">1</span></div>
+        <div class="summary-item"><span>Total Changes</span><span class="val" style="color:var(--amber)">10</span></div>
+      </div>
+
+      <div class="summary-block">
+        <h4>CAMO Action Summary</h4>
+        <div class="summary-item"><span>AMP Tasks Affected</span><span class="val" style="color:var(--amber)">5</span></div>
+        <div class="summary-item"><span>Require Authority Notif.</span><span class="val" style="color:var(--red)">3</span></div>
+        <div class="summary-item"><span>AMP Amendments Needed</span><span class="val" style="color:var(--orange)">3</span></div>
+        <div class="summary-item"><span>Interval Reductions</span><span class="val" style="color:var(--red)">3</span></div>
+      </div>
+
+      <div class="summary-block">
+        <h4>MRO Action Summary</h4>
+        <div class="summary-item"><span>New Special Tests</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>New Tools Required</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>New Materials Required</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>Material Spec Changes</span><span class="val" style="color:var(--orange)">1</span></div>
+        <div class="summary-item"><span>MH Changes</span><span class="val" style="color:var(--green)">1</span></div>
+        <div class="summary-item"><span>New Tasks</span><span class="val" style="color:var(--orange)">3</span></div>
+      </div>
+
+      <div class="summary-block">
+        <h4>Revision Info</h4>
+        <div class="summary-item"><span>Aircraft Type</span><span class="val">Cessna 172</span></div>
+        <div class="summary-item"><span>Old Revision</span><span class="val" style="color:var(--slate)">Rev 15</span></div>
+        <div class="summary-item"><span>New Revision</span><span class="val" style="color:var(--amber)">Rev 21</span></div>
+        <div class="summary-item"><span>ATA Chapters</span><span class="val">12, 27, 32</span></div>
+        <div class="summary-item"><span>Analysis Mode</span><span class="val">MRO + CAMO</span></div>
+      </div>
+
+      <div class="summary-block">
+        <h4>Immediate Actions Required</h4>
+        <div class="summary-item"><span>Fuel Filter interval cut 50%</span><span class="pri pri-high">URGENT</span></div>
+        <div class="summary-item"><span>Battery check interval cut 33%</span><span class="pri pri-high">URGENT</span></div>
+        <div class="summary-item"><span>Engine Mount interval cut 40%</span><span class="pri pri-high">URGENT</span></div>
+        <div class="summary-item"><span>Notify authority (EASA/FAA)</span><span class="pri pri-high">URGENT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SHEET 2: ALL CHANGES ── -->
+  <div class="tab-panel" id="tab-all">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">All Changes</div>
+        <div class="panel-desc">Complete delta between Rev 15 and Rev 21</div>
+      </div>
+      <span class="row-count">10 rows</span>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">ℹ</span>
+      <span>This sheet lists every detected change across all ATA chapters. Filter by priority or change type for targeted review.</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ATA Chapter</th>
+            <th>Task Description</th>
+            <th>Change Type</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">01</td>
+            <td class="mono">ATA 12</td>
+            <td>Fuel Filter Replacement</td>
+            <td><span class="ctype">INTERVAL_REDUCED</span></td>
+            <td class="mono">100 FH</td>
+            <td class="mono">50 FH</td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td class="mono">02</td>
+            <td class="mono">ATA 24</td>
+            <td>Battery Capacity Check</td>
+            <td><span class="ctype">INTERVAL_REDUCED</span></td>
+            <td class="mono">90 days</td>
+            <td class="mono">60 days</td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td class="mono">03</td>
+            <td class="mono">ATA 71</td>
+            <td>Engine Mount Inspection</td>
+            <td><span class="ctype">INTERVAL_REDUCED</span></td>
+            <td class="mono">500 FH</td>
+            <td class="mono">300 FH</td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td class="mono">04</td>
+            <td class="mono">ATA 72</td>
+            <td>Engine Cylinder Borescope</td>
+            <td><span class="ctype">NEW_TASK</span></td>
+            <td class="mono">—</td>
+            <td class="mono">500 FH</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">05</td>
+            <td class="mono">ATA 72</td>
+            <td>Engine Cylinder Borescope</td>
+            <td><span class="ctype">NEW_SPECIAL_TEST</span></td>
+            <td class="mono">—</td>
+            <td class="mono">Borescope NDT</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">06</td>
+            <td class="mono">ATA 32</td>
+            <td>Wheel Bearing Repack</td>
+            <td><span class="ctype">NEW_TASK</span></td>
+            <td class="mono">—</td>
+            <td class="mono">500 FH</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">07</td>
+            <td class="mono">ATA 27</td>
+            <td>Torque Link Lubrication</td>
+            <td><span class="ctype">NEW_TASK</span></td>
+            <td class="mono">—</td>
+            <td class="mono">200 FH</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">08</td>
+            <td class="mono">ATA 32</td>
+            <td>Brake Fluid Specification</td>
+            <td><span class="ctype">MATERIAL_CHANGED</span></td>
+            <td class="mono">MIL-H-5606</td>
+            <td class="mono">MIL-PRF-5606</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">09</td>
+            <td class="mono">ATA 72</td>
+            <td>Borescope Equipment</td>
+            <td><span class="ctype">NEW_TOOL</span></td>
+            <td class="mono">—</td>
+            <td class="mono">Borescope Kit</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">10</td>
+            <td class="mono">ATA 05</td>
+            <td>Annual Inspection Man-Hours</td>
+            <td><span class="ctype">MH_CHANGE</span></td>
+            <td class="mono">16 MH</td>
+            <td class="mono">19 MH</td>
+            <td><span class="pri pri-low">LOW</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SHEET 3: MRO ACTION ITEMS ── -->
+  <div class="tab-panel" id="tab-mro">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">MRO Action Items</div>
+        <div class="panel-desc">Filtered view for Maintenance Planning Engineers — tools, materials, special tests, man-hours</div>
+      </div>
+      <span class="row-count">5 rows</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ATA Chapter</th>
+            <th>Change Type</th>
+            <th>Description</th>
+            <th>Action Required</th>
+            <th>Department</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">01</td>
+            <td class="mono">ATA 72</td>
+            <td><span class="ctype">NEW_SPECIAL_TEST</span></td>
+            <td>Engine cylinder borescope inspection added</td>
+            <td><span class="action">Schedule NDT crew</span></td>
+            <td>Planning / NDT</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">02</td>
+            <td class="mono">ATA 72</td>
+            <td><span class="ctype">NEW_TOOL</span></td>
+            <td>Borescope equipment now required (ATA 72)</td>
+            <td><span class="action">Procure borescope kit</span></td>
+            <td>Stores</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">03</td>
+            <td class="mono">ATA 32</td>
+            <td><span class="ctype">NEW_MATERIAL</span></td>
+            <td>Wheel bearing grease MIL-PRF-81322 required</td>
+            <td><span class="action">Add to approved materials list</span></td>
+            <td>Stores / QA</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">04</td>
+            <td class="mono">ATA 32</td>
+            <td><span class="ctype">MATERIAL_CHANGED</span></td>
+            <td>Brake fluid spec changed: MIL-H-5606 → MIL-PRF-5606</td>
+            <td><span class="action">Update approved materials list</span></td>
+            <td>QA</td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">05</td>
+            <td class="mono">ATA 05</td>
+            <td><span class="ctype">MH_CHANGE</span></td>
+            <td>Annual inspection: 16 MH → 19 MH (+3 MH)</td>
+            <td><span class="action">Update work order templates</span></td>
+            <td>Planning</td>
+            <td><span class="pri pri-low">LOW</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SHEET 4: CAMO AMP IMPACT ── -->
+  <div class="tab-panel" id="tab-camo">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">CAMO AMP Impact</div>
+        <div class="panel-desc">Interval changes cross-referenced against current AMP tasks — authority notification flags</div>
+      </div>
+      <span class="row-count">3 rows</span>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">⚠</span>
+      <span>All INTERVAL_REDUCED changes that affect AMP tasks require AMP amendment and may require authority (EASA/FAA) notification. Verify with your Airworthiness Engineer before amending.</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ATA</th>
+            <th>AMP Task ID</th>
+            <th>Task Description</th>
+            <th>Old Interval</th>
+            <th>New Interval</th>
+            <th>Reduction %</th>
+            <th>AMP in AMP?</th>
+            <th>Authority Notif.</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">01</td>
+            <td class="mono">ATA 12</td>
+            <td class="mono">C172-12-001</td>
+            <td>Fuel Filter Replacement</td>
+            <td class="mono">100 FH</td>
+            <td class="mono" style="color:var(--red)">50 FH</td>
+            <td class="mono" style="color:var(--red)">−50%</td>
+            <td><span class="amp-status amp-yes">YES</span></td>
+            <td><span class="amp-status amp-yes">REQUIRED</span></td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td class="mono">02</td>
+            <td class="mono">ATA 24</td>
+            <td class="mono">C172-24-003</td>
+            <td>Battery Capacity Check</td>
+            <td class="mono">90 days</td>
+            <td class="mono" style="color:var(--red)">60 days</td>
+            <td class="mono" style="color:var(--red)">−33%</td>
+            <td><span class="amp-status amp-yes">YES</span></td>
+            <td><span class="amp-status amp-yes">REQUIRED</span></td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+          <tr>
+            <td class="mono">03</td>
+            <td class="mono">ATA 71</td>
+            <td class="mono">C172-71-002</td>
+            <td>Engine Mount Inspection</td>
+            <td class="mono">500 FH</td>
+            <td class="mono" style="color:var(--red)">300 FH</td>
+            <td class="mono" style="color:var(--red)">−40%</td>
+            <td><span class="amp-status amp-yes">YES</span></td>
+            <td><span class="amp-status amp-yes">REQUIRED</span></td>
+            <td><span class="pri pri-high">HIGH</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SHEET 5: NEW TASKS ── -->
+  <div class="tab-panel" id="tab-new">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">New Tasks</div>
+        <div class="panel-desc">Tasks added in Rev 21 that require engineering review and potential AMP incorporation</div>
+      </div>
+      <span class="row-count">3 rows</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ATA</th>
+            <th>New Task Description</th>
+            <th>Interval</th>
+            <th>Special Req.</th>
+            <th>AMP Incorporation</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">01</td>
+            <td class="mono">ATA 72</td>
+            <td>Engine Cylinder Borescope Inspection</td>
+            <td class="mono">500 FH</td>
+            <td>NDT qualified technician + borescope equipment</td>
+            <td><span class="amp-status amp-tbd">REVIEW</span></td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">02</td>
+            <td class="mono">ATA 32</td>
+            <td>Wheel Bearing Repack</td>
+            <td class="mono">500 FH</td>
+            <td>MIL-PRF-81322 grease required</td>
+            <td><span class="amp-status amp-tbd">REVIEW</span></td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+          <tr>
+            <td class="mono">03</td>
+            <td class="mono">ATA 27</td>
+            <td>Torque Link Lubrication</td>
+            <td class="mono">200 FH</td>
+            <td>—</td>
+            <td><span class="amp-status amp-tbd">REVIEW</span></td>
+            <td><span class="pri pri-medium">MEDIUM</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SHEET 6: DELETED TASKS ── -->
+  <div class="tab-panel" id="tab-deleted">
+    <div class="panel-header">
+      <div>
+        <div class="panel-title">Deleted Tasks</div>
+        <div class="panel-desc">Tasks removed from AMM Rev 21 — verify AMP removal is appropriate</div>
+      </div>
+      <span class="row-count">0 rows</span>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">✓</span>
+      <span>No tasks were deleted between Rev 15 and Rev 21 for this scenario. This sheet would list any tasks removed from the AMM, requiring verification before AMP removal.</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>ATA</th>
+            <th>Deleted Task Description</th>
+            <th>Old Interval</th>
+            <th>In Current AMP?</th>
+            <th>AMP Action</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="7" style="text-align:center; color:var(--slate2); padding: 2rem; font-style: italic;">
+              No deleted tasks in this revision comparison
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    <strong style="color:var(--white)">AMM Revision Engineer</strong> — Sample output report using synthetic Cessna 172 data ·
+    <a href="index.html">Back to overview</a>
+  </p>
+  <p style="margin-top:.5rem">
+    Disclaimer: This is a demo with synthetic data only. All real output must be verified by a qualified aviation maintenance engineer.
+  </p>
+</footer>
+
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
