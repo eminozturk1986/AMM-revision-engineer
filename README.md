@@ -1,7 +1,10 @@
 # AMM Revision Engineer — Claude Code Skill
 
-> **Agentic Aviation** | by Emin Öztürk  
+> **Agentic Aviation** | by Emin Öztürk
 > Automate the work of an AMM Revision Engineer using AI
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Report-f59e0b?style=for-the-badge&logo=googlechrome&logoColor=white)](https://eminozturk1986.github.io/AMM-revision-engineer/)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-0f172a?style=for-the-badge&logo=github&logoColor=white)](https://github.com/eminozturk1986/AMM-revision-engineer)
 
 ---
 
